@@ -27,9 +27,17 @@ class LLMClient:
         if not self.api_key:
             raise ValueError("LLM_API_KEY is not configured")
 
+        # Build optional OpenRouter headers
+        headers = {}
+        if Config.OPENROUTER_HTTP_REFERER:
+            headers["HTTP-Referer"] = Config.OPENROUTER_HTTP_REFERER
+        if Config.OPENROUTER_X_TITLE:
+            headers["X-Title"] = Config.OPENROUTER_X_TITLE
+
         self.client = OpenAI(
             api_key=self.api_key,
-            base_url=self.base_url
+            base_url=self.base_url,
+            default_headers=headers if headers else None
         )
 
     def chat(
